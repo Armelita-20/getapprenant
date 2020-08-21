@@ -14,7 +14,8 @@ class CreateApprenantsTable extends Migration
     public function up()
     {
         Schema::create('apprenants', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id');
+            $table->unsignedBigInteger('tuteurs_id');
             $table->timestamps();
             $table->string('nom');
             $table->string('prenom');

@@ -4,7 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Tuteur;
 use App\Apprenant;
+// use Symfony\Component\HttpFoundation\Session\Session;
+
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
 
 class ApprenantController extends Controller
 {
@@ -16,7 +21,8 @@ class ApprenantController extends Controller
     public function index()
     {
         $apprenants=Apprenant::all();
-        return view('listapprenant',['apprenants'=>$apprenants]);
+        $armelle=Tuteur::all();
+        return view('listapprenant',['apprenants'=>$apprenants, 'tuteur'=>$armelle]);
     }
 
     /**
@@ -26,7 +32,9 @@ class ApprenantController extends Controller
      */
     public function create()
     {
-        return view('formapprenant');
+        $armelle=Tuteur::all();
+
+        return view('formapprenant',['tuteur'=>$armelle]);
     }
 
     /**
@@ -38,6 +46,9 @@ class ApprenantController extends Controller
     public function store(Request $request)
     {
        Apprenant::create([
+        'tuteurs_id'=>$request->tuteurs_id,
+
+
         'nom'=>$request->nom,
         'prenom'=>$request->prenom,
         'date'=>$request->date,
@@ -47,9 +58,11 @@ class ApprenantController extends Controller
         'telephone'=>$request->telephone,
         'email'=>$request->email,
         'genre'=>$request->genre,
-        'photo'=>$request->photo,
+        'photo'=>$request->photo->store('public/photo', 'public'),
         'projet'=>$request->projet,
        ]);
+       return Redirect('formapprenant');
+
     }
 
     /**
@@ -58,9 +71,15 @@ class ApprenantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($apprenant)
     {
-        //
+
+         $apprenant = Apprenant::find($apprenant);
+
+
+        return view('detail', ['apprenant'=>$apprenant]);
+
+
     }
 
     /**
@@ -69,9 +88,10 @@ class ApprenantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $id)
     {
-        //
+        $miseajour=Apprenant::where('id', '=', $id)->first();
+       return view('miseajourapprenant', compact(Apprenant::class));
     }
 
     /**
@@ -83,8 +103,28 @@ class ApprenantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $miseajour= Apprenant::find($request->id);
+        $miseajour->id=$request->id;
+        $miseajour->nom=$request->nom;
+        $miseajour->prenom=$request->prenom;
+        $miseajour->date=$request->date;
+        $miseajour->ville=$request->ville;
+        $miseajour->id=$request->id;
+        $miseajour->formation=$request->formation;
+        $miseajour->etablissement=$request->etablissement;
+        $miseajour->telephone=$request->telephone;
+        $miseajour->email=$request->email;
+        $miseajour->tuteurs_id=$request->tuteurs_id;
+        $miseajour->genre=$request->genre;
+        $miseajour->photo=$request->photo;
+        $miseajour->projet=$request->projet;
+        $miseajour->save();
+        return redirect('miseajourapprenant');
     }
+
+
+
+
 
     /**
      * Remove the specified resource from storage.
@@ -92,8 +132,12 @@ class ApprenantController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $supprimer=Apprenant::find($request->id);
+        $supprimer->delete();
+        return redirect('listapprenant');
     }
+
+
 }

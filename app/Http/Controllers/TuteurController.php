@@ -37,12 +37,15 @@ class TuteurController extends Controller
     public function store(Request $request)
     {
        Tuteur::create([
+
         'nom_tuteur'=>$request->nom_tuteur,
         'prenom_tuteur'=>$request->prenom_tuteur,
         'telephone_tuteur'=>$request->telephone_tuteur,
         'profession_tuteur'=>$request->profession_tuteur,
        ]);
+       return redirect('formapprenant');
     }
+
 
     /**
      * Display the specified resource.

@@ -26,6 +26,10 @@ Route::post('formulairetuteur', 'TuteurController@store');
 Route::get('formapprenant', 'ApprenantController@create');
 Route::post('formapprenant', 'ApprenantController@store');
 Route::get('listapprenant', 'ApprenantController@index');
+Route::get('supprimerapprenant', 'ApprenantController@destroy');
+Route::get('miseajourapprenant', 'ApprenantController@edit');
+Route::post('miseajourapprenant', 'ApprenantController@update');
+Route::get('detail/{apprenant}', 'ApprenantController@show');
 
 // page aide
 Route::get('aide', 'AideController@index');
